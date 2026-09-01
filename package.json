@@ -19,13 +19,16 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json && chmod +x dist/index.js",
+    "prepare": "npm run build",
+    "build:gui": "node scripts/build-gui.mjs",
+    "build:all": "npm run build && npm run build:gui",
+    "start": "node dist/index.js",
+    "serve": "node dist/index.js --serve",
     "dev": "tsx src/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "type-check": "tsc -p tsconfig.json --noEmit",
-    "clean": "rm -rf dist",
-    "build:gui": "node scripts/build-gui.mjs",
-    "build:all": "npm run build && npm run build:gui"
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@dagrejs/dagre": "^1.1.4",

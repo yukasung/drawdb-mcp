@@ -220,3 +220,29 @@ describe("live bridge startup", () => {
     );
   });
 });
+
+describe("argument parsing", () => {
+  // `npm run serve` is `node dist/index.js --serve`, so `npm run serve --
+  // --serve 4000` reaches the process with the flag twice. Reading the first
+  // one takes the script's bare flag and quietly drops the requested port.
+  it("lets a repeated flag's last occurrence win", async () => {
+    const { servePortFromArgv } = await import("../src/cli.js");
+
+    expect(servePortFromArgv([], {})).toBeUndefined();
+    expect(servePortFromArgv(["--serve"], {})).toBe(4321);
+    expect(servePortFromArgv(["--serve", "4000"], {})).toBe(4000);
+    expect(servePortFromArgv(["--serve", "--file", "d.ddb"], {})).toBe(4321);
+    expect(servePortFromArgv(["--serve", "--file", "d.ddb", "--serve", "4000"], {})).toBe(4000);
+    expect(() => servePortFromArgv(["--serve", "banana"], {})).toThrow(/wants a port/);
+  });
+
+  it("takes the last --file too", async () => {
+    const { diagramPathFromArgv } = await import("../src/cli.js");
+
+    expect(diagramPathFromArgv([], {})).toBe("diagram.ddb");
+    expect(diagramPathFromArgv([], { DRAWDB_FILE: "env.ddb" })).toBe("env.ddb");
+    expect(diagramPathFromArgv(["--file", "a.ddb"], {})).toBe("a.ddb");
+    expect(diagramPathFromArgv(["--file", "a.ddb", "--file", "b.ddb"], {})).toBe("b.ddb");
+    expect(() => diagramPathFromArgv(["--file"], {})).toThrow(/needs a path/);
+  });
+});

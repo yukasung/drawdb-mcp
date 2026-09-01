@@ -16,12 +16,13 @@ What this server writes is checked in CI against drawDB's *own* import validator
 
 ## Install
 
+Needs **Node >= 20.19** and npm; the browser canvas also needs **git**.
+
 ```bash
-npm install
-npm run build
+npm install   # `prepare` builds dist/ for you
 ```
 
-Every command for building, serving and testing this checkout is in [RUNNING.md](RUNNING.md).
+Every command is in [RUNNING.md](RUNNING.md).
 
 Register it with Claude Code:
 
@@ -36,9 +37,10 @@ neither, it uses `diagram.ddb` in the working directory. `open_diagram` switches
 
 ```bash
 npm run build:gui   # once — clones drawDB at the pinned commit and builds it
+npm run serve       # http://127.0.0.1:4321/editor
 ```
 
-Then add `--serve` to the command you registered:
+Or add `--serve` to the command you registered, to let the canvas start with the server:
 
 ```bash
 claude mcp add drawdb -- node /absolute/path/to/dist/index.js \
