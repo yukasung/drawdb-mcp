@@ -1,0 +1,48 @@
+{
+  "name": "drawdb-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for drawDB \u2014 design and edit .ddb ER diagrams from an AI assistant.",
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "bin": {
+    "drawdb-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "gui",
+    "scripts",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist",
+    "build:gui": "node scripts/build-gui.mjs",
+    "build:all": "npm run build && npm run build:gui"
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "^1.1.4",
+    "@dbml/core": "^3.13.9",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "nanoid": "^5.1.6",
+    "node-sql-parser": "^5.4.0",
+    "oracle-sql-parser": "^0.1.0",
+    "ws": "^8.21.3",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/ws": "^8.18.1",
+    "jsonschema": "^1.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.4"
+  }
+}

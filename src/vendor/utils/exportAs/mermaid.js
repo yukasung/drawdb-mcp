@@ -1,0 +1,58 @@
+// Vendored from drawdb-io/drawdb (AGPL-3.0). See ../UPSTREAM.md.
+// Logic unchanged; the only edits are `.js` extensions on relative imports
+// (required by Node ESM) and this header.
+// @ts-nocheck
+import { Cardinality } from "../../data/constants.js";
+import { dbToTypes } from "../../data/datatypes.js";
+import i18n from "../../i18n/i18n.js";
+
+export function jsonToMermaid(obj) {
+  function getMermaidRelationship(relationship) {
+    switch (relationship) {
+      case i18n.t(Cardinality.ONE_TO_ONE):
+      case Cardinality.ONE_TO_ONE:
+        return "||--||";
+      case i18n.t(Cardinality.MANY_TO_ONE):
+      case Cardinality.MANY_TO_ONE:
+        return "}o--||";
+      case i18n.t(Cardinality.ONE_TO_MANY):
+      case Cardinality.ONE_TO_MANY:
+        return "||--o{";
+      default:
+        return "--";
+    }
+  }
+
+  const mermaidEntities = obj.tables
+    .map((table) => {
+      const fields = table.fields
+        .map((field) => {
+          const fieldType =
+            field.type +
+            ((dbToTypes[obj.database][field.type].isSized ||
+              dbToTypes[obj.database][field.type].hasPrecision) &&
+            field.size &&
+            field.size !== ""
+              ? "(" + field.size + ")"
+              : "");
+          return `\t\t${fieldType} ${field.name}`;
+        })
+        .join("\n");
+      return `\t${table.name} {\n${fields}\n\t}`;
+    })
+    .join("\n\n");
+
+  const mermaidRelationships = obj.relationships?.length
+    ? obj.relationships
+        .map((r) => {
+          const startTable = obj.tables.find(
+            (t) => t.id === r.startTableId,
+          ).name;
+          const endTable = obj.tables.find((t) => t.id === r.endTableId).name;
+          return `\t${startTable} ${getMermaidRelationship(r.cardinality)} ${endTable} : references`;
+        })
+        .join("\n")
+    : "";
+
+  return `erDiagram\n${mermaidRelationships ? `${mermaidRelationships}\n\n` : ""}${mermaidEntities}`;
+}

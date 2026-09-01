@@ -1,0 +1,14 @@
+{
+ "folders": [
+  {
+   "name": "drawdb-mcp",
+   "path": "."
+  }
+ ],
+ "settings": {
+  "files.exclude": {
+   "dist": true,
+   "node_modules": true
+  }
+ }
+}
